@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { admin, authUser, fail, nickname } from "@/lib/server";
-import { MAX_PLAYERS, getPlayers, getRoom } from "@/lib/rooms";
+import { MAX_PLAYERS, getPlayers, getRoom, touch } from "@/lib/rooms";
 
 type Ctx = { params: Promise<{ code: string }> };
 
@@ -16,5 +16,6 @@ export async function POST(req: Request, { params }: Ctx) {
   if (room.status !== "lobby") return fail("A partida já começou");
   if (players.length >= MAX_PLAYERS) return fail("Sala cheia");
   await db.from("room_players").insert({ room_code: code, player: user.id, nickname: nickname(user), seat: players.length });
+  await touch(db, room);
   return NextResponse.json({ ok: true });
 }

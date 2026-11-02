@@ -10,7 +10,7 @@ export async function GET(req: Request, { params }: Ctx) {
   const db = admin();
   const code = (await params).code.toUpperCase();
   let room = await getRoom(db, code);
-  if (!room) return fail("Sala não encontrada", 404);
+  if (!room) return fail("Sala não encontrada ou expirada. As salas somem 24 horas depois da última atividade.", 404);
   if (room.status === "playing" && Date.now() >= new Date(room.round_ends_at).getTime()) {
     await finalize(db, room);
     room = await getRoom(db, code);
@@ -30,7 +30,7 @@ export async function GET(req: Request, { params }: Ctx) {
     words = (data ?? []).map((s: any) => ({ nickname: players.find((p: any) => p.player === s.target)?.nickname ?? "?", word: s.word }));
   }
   return NextResponse.json({
-    room: { code, host: room.host, mode: room.mode, len: room.len, status: room.status, round: room.round, roundEndsAt: room.round_ends_at },
+    room: { code, host: room.host, mode: room.mode, len: room.len, status: room.status, round: room.round, maxRounds: room.max_rounds, roundEndsAt: room.round_ends_at },
     players: players.map((p: any) => ({ id: p.player, nickname: p.nickname, seat: p.seat, status: p.status, patterns: p.patterns, score: p.score, hasWord: p.has_word })),
     joined: idx >= 0,
     me: { id: user.id, rows, setFor: room.mode === "duel" && idx >= 0 && players.length > 1 ? players[(idx + 1) % players.length].nickname : null },

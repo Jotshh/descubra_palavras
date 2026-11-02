@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { MAX, evaluate, norm } from "@/lib/game";
 import { admin, authUser, fail, isValidWord } from "@/lib/server";
-import { finalize, getPlayers, getRoom } from "@/lib/rooms";
+import { finalize, getPlayers, getRoom, touch } from "@/lib/rooms";
 
 type Ctx = { params: Promise<{ code: string }> };
 
@@ -14,6 +14,7 @@ export async function POST(req: Request, { params }: Ctx) {
   if (!room) return fail("Sala não encontrada", 404);
   if (room.status !== "playing") return fail("Não há rodada em andamento", 409);
   if (Date.now() >= new Date(room.round_ends_at).getTime()) { await finalize(db, room); return fail("Tempo esgotado", 409); }
+  await touch(db, room);
   const players = await getPlayers(db, code);
   const me = players.find((p: any) => p.player === user.id);
   if (!me) return fail("Você não está nesta sala", 403);

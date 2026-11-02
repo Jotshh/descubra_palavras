@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { norm } from "@/lib/game";
 import { admin, authUser, fail, isValidWord } from "@/lib/server";
-import { getPlayers, getRoom } from "@/lib/rooms";
+import { getPlayers, getRoom, touch } from "@/lib/rooms";
 
 type Ctx = { params: Promise<{ code: string }> };
 
@@ -24,5 +24,6 @@ export async function POST(req: Request, { params }: Ctx) {
   const target = players[(idx + 1) % players.length];
   await db.from("room_secrets").upsert({ room_code: code, round: room.round + 1, target: target.player, setter: user.id, word: w }, { onConflict: "room_code,round,target" });
   await db.from("room_players").update({ has_word: true }).eq("room_code", code).eq("player", user.id);
+  await touch(db, room);
   return NextResponse.json({ ok: true });
 }
