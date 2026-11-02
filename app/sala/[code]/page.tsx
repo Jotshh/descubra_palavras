@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import ServerGame, { Reply, Row } from "@/components/ServerGame";
 import { api, supabase } from "@/lib/supabase";
+import { recordGame } from "@/lib/history";
 import { useRequireLogin } from "@/lib/useSession";
 
 type P = { id: string; nickname: string; seat: number; status: string; patterns: string[]; score: number; hasWord: boolean };
@@ -49,6 +50,15 @@ export default function Sala() {
     const poll = setInterval(load, 5000); // reserva, caso o Realtime não esteja ligado
     return () => { supabase().removeChannel(ch); clearInterval(poll); };
   }, [session, code, load]);
+
+  // Ao fim de cada rodada, cada jogador registra o próprio resultado no histórico.
+  useEffect(() => {
+    if (!s || s.room.status !== "finished" || !s.words) return;
+    const me = s.players.find((p) => p.id === s.me.id);
+    if (!me || (me.status !== "won" && me.status !== "lost") || me.patterns.length === 0) return;
+    const w = s.room.mode === "race" ? s.words[0]?.word : s.words.find((x) => x.nickname === me.nickname)?.word;
+    recordGame({ id: `room:${s.room.code}:${s.room.round}`, mode: "room", len: s.room.len, won: me.status === "won", attempts: me.patterns.length, word: w ?? "" });
+  }, [s]);
 
   const ends = s?.room.roundEndsAt ? new Date(s.room.roundEndsAt).getTime() : 0;
   const playing = s?.room.status === "playing";

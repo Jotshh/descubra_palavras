@@ -4,6 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import ServerGame, { Reply, Row } from "@/components/ServerGame";
 import { api } from "@/lib/supabase";
+import { recordGame } from "@/lib/history";
 import { useRequireLogin } from "@/lib/useSession";
 
 type Info = { len: number; creator: string; rows: Row[]; status: string; word?: string };
@@ -23,6 +24,7 @@ export default function Desafio() {
   if (!info) return <main className="panel"><p className="ok">Carregando desafio…</p></main>;
   return (
     <ServerGame len={info.len} rows={info.rows} status={info.status} word={info.word} title={`Desafio de ${info.creator}`}
-      onGuess={(guess) => api<Reply>(`/api/challenges/${id}/guess`, { guess })} />
+      onGuess={(guess) => api<Reply>(`/api/challenges/${id}/guess`, { guess })}
+      onFinish={(r) => recordGame({ id: `challenge:${id}`, mode: "challenge", len: info.len, won: r.won, attempts: r.attempts, word: r.word ?? "", secs: r.secs })} />
   );
 }

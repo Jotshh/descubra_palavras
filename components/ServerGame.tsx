@@ -11,6 +11,7 @@ const RANK: Record<State, number> = { a: 1, p: 2, c: 3 };
 /** Tabuleiro cujo palpite é avaliado pelo servidor (a palavra secreta nunca chega aqui). */
 export default function ServerGame(p: {
   len: number; rows: Row[]; status: string; word?: string; title?: string; embedded?: boolean;
+  onFinish?: (r: { won: boolean; attempts: number; word?: string; secs: number }) => void;
   onGuess: (w: string) => Promise<Reply>;
 }) {
   const { len, onGuess } = p;
@@ -22,6 +23,8 @@ export default function ServerGame(p: {
   const [toast, setToast] = useState("");
   const [shake, setShake] = useState(false);
   const busy = useRef(false);
+  const t0 = useRef(Date.now());
+  const tries = useRef(p.rows.length);
   const over = status !== "playing";
 
   const say = (t: string) => { setToast(t); setTimeout(() => setToast(""), 1400); };
@@ -33,14 +36,18 @@ export default function ServerGame(p: {
     busy.current = true;
     try {
       const r = await onGuess(cur);
+      tries.current++;
       setRows((x) => [...x, { w: cur, res: r.res }]); setCur("");
       setTimeout(() => {
         setShown((n) => n + 1);
-        if (r.status !== "playing") { setStatus(r.status); setWord(r.word); }
+        if (r.status !== "playing") {
+          setStatus(r.status); setWord(r.word);
+          p.onFinish?.({ won: r.status === "won", attempts: tries.current, word: r.word, secs: Math.round((Date.now() - t0.current) / 1000) });
+        }
         busy.current = false;
       }, len * 100 + 500);
     } catch (e) { wobble(); say((e as Error).message); busy.current = false; }
-  }, [cur, len, over, onGuess]);
+  }, [cur, len, over, onGuess, p]);
 
   const press = useCallback((k: string) => {
     if (over || busy.current) return;

@@ -1,6 +1,8 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import { expired } from "@/lib/session";
+import { useSession } from "@/lib/useSession";
 
 const nextUrl = () => new URLSearchParams(location.search).get("next") || "/";
 
@@ -10,6 +12,8 @@ export default function Entrar() {
   const [nick, setNick] = useState("");
   const [msg, setMsg] = useState("");
   const [busy, setBusy] = useState(false);
+  const { session, ready } = useSession();
+  useEffect(() => { if (ready && session && !expired(session)) location.href = nextUrl(); }, [ready, session]);
 
   const google = () =>
     supabase().auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + nextUrl() } });

@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { LENGTHS, MAX, State, evaluate, norm } from "@/lib/game";
 import { Dict, loadDict, randomWord } from "@/lib/dict";
 import HelpModal from "./HelpModal";
+import { recordGame } from "@/lib/history";
 
 type Guess = { w: string; res: State[] };
 type Stats = { g: number; w: number; s: number };
@@ -30,12 +31,13 @@ export default function Game() {
   const [shake, setShake] = useState(false);
   const [stats, setStats] = useState<Stats>({ g: 0, w: 0, s: 0 });
   const busy = useRef(false);
+  const t0 = useRef(Date.now());
 
   const say = (t: string) => { setToast(t); setTimeout(() => setToast(""), 1400); };
 
   const start = useCallback((d: Dict) => {
     setSecret(randomWord(d)); setGuesses([]); setRevealed(0); setCur("");
-    setOver(false); setWon(false); setModal(false); busy.current = false;
+    setOver(false); setWon(false); setModal(false); busy.current = false; t0.current = Date.now();
   }, []);
 
   useEffect(() => {
@@ -61,6 +63,7 @@ export default function Game() {
         const n = { g: s.g + 1, w: s.w + (win ? 1 : 0), s: win ? s.s + 1 : 0 };
         try { localStorage.setItem("termo-stats", JSON.stringify(n)); } catch {}
         setStats(n); setWon(win); setOver(true); setModal(true);
+        recordGame({ id: crypto.randomUUID(), mode: "solo", len, won: win, attempts: all.length, word: secret, secs: Math.round((Date.now() - t0.current) / 1000) });
       }
     }, len * 100 + 500);
   }, [dict, over, cur, len, secret, guesses]);
