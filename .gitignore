@@ -2,3 +2,5 @@ node_modules
 .next
 next-env.d.ts
 stitch_palavr_web_game_ui.zip
+supabase
+.env
