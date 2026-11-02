@@ -12,7 +12,7 @@ export async function POST(req: Request, { params }: Ctx) {
   const g = norm(String(guess ?? ""));
   const db = admin();
   const { data: ch } = await db.from("challenges").select("word,len").eq("id", id).maybeSingle();
-  if (!ch) return fail("Desafio não encontrado", 404);
+  if (!ch) return fail("Desafio não encontrado ou expirado (somem 24 horas depois da última atividade)", 404);
   if (g.length !== ch.len) return fail("Faltam letras");
   if (!isValidWord(g)) return fail("Essa palavra não existe");
   const { data: play } = await db.from("plays").select("guesses,patterns,status").eq("challenge_id", id).eq("player", user.id).maybeSingle();
@@ -27,5 +27,6 @@ export async function POST(req: Request, { params }: Ctx) {
     { onConflict: "challenge_id,player" },
   );
   if (error) return fail("Erro ao salvar o palpite", 500);
+  await db.from("challenges").update({ last_activity: new Date().toISOString() }).eq("id", id);
   return NextResponse.json({ res, status, word: status !== "playing" ? ch.word : undefined });
 }

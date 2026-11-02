@@ -8,7 +8,7 @@ import { useRequireLogin } from "@/lib/useSession";
 
 type P = { id: string; nickname: string; seat: number; status: string; patterns: string[]; score: number; hasWord: boolean };
 type S = {
-  room: { code: string; host: string; mode: "race" | "duel"; len: number; status: string; round: number; roundEndsAt: string | null };
+  room: { code: string; host: string; mode: "race" | "duel"; len: number; status: string; round: number; maxRounds: number; roundEndsAt: string | null };
   players: P[]; joined: boolean; me: { id: string; rows: Row[]; setFor: string | null };
   words?: { nickname: string; word: string }[]; now: number;
 };
@@ -72,6 +72,9 @@ export default function Sala() {
   const isHost = room.host === me.id;
   const mine = players.find((p) => p.id === me.id);
   const mm = String(Math.floor(left / 60000)).padStart(1, "0") + ":" + String(Math.floor((left % 60000) / 1000)).padStart(2, "0");
+  const over = room.round >= room.maxRounds;
+  const top = Math.max(...players.map((p) => p.score));
+  const champs = players.filter((p) => p.score === top);
   const modeName = room.mode === "race" ? "Corrida" : "Duelo";
 
   const roster = (
@@ -84,7 +87,7 @@ export default function Sala() {
     <>
       <nav className="top">
         <Link href="/" className="brand">← Sala {code}</Link>
-        <span className="ok">{modeName} · {room.len} letras · rodada {Math.max(room.round, 1)}</span>
+        <span className="ok">{modeName} · {room.len} letras · rodada {Math.max(room.round, 1)} de {room.maxRounds}</span>
       </nav>
 
       {room.status === "lobby" && (
@@ -142,14 +145,19 @@ export default function Sala() {
 
       {room.status === "finished" && (
         <main className="panel"><div className="card">
-          <h2>Fim da rodada {room.round}</h2>
+          <h2>{over ? "Fim de jogo" : `Fim da rodada ${room.round} de ${room.maxRounds}`}</h2>
+          {over && <p className="ok"><b>{champs.length > 1 ? `Empate: ${champs.map((c) => c.nickname).join(" e ")}` : `Campeão: ${champs[0].nickname}`}</b> com {top} pts</p>}
           {s.words && <p className="ok">{room.mode === "race" ? "A palavra era" : "Palavras"}: {room.mode === "race" ? <b style={{ textTransform: "uppercase" }}>{s.words[0]?.word}</b> : s.words.map((w) => `${w.nickname}: ${w.word.toUpperCase()}`).join(" · ")}</p>}
           <ol className="list rank">
             {[...players].sort((a, b) => b.score - a.score).map((p) => (
               <li key={p.id}><span>{p.nickname}</span><span>{label(p)}</span><span>{p.score} pts</span></li>
             ))}
           </ol>
-          {isHost ? <button className="btn pri" onClick={() => act("start")}>{room.mode === "duel" ? "Próxima rodada (escolher palavras)" : "Próxima rodada"}</button> : <p className="ok">Aguardando o criador iniciar a próxima rodada.</p>}
+          {over ? (
+            <><Link href="/sala" className="btn pri">Criar nova sala</Link><p className="ok">Esta sala some sozinha 24 horas depois da última atividade.</p></>
+          ) : isHost ? (
+            <button className="btn pri" onClick={() => act("start")}>{room.mode === "duel" ? "Próxima rodada (escolher palavras)" : "Próxima rodada"}</button>
+          ) : <p className="ok">Aguardando o criador iniciar a próxima rodada.</p>}
           {msg && <p className="err" role="alert">{msg}</p>}
         </div></main>
       )}
