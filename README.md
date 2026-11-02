@@ -63,3 +63,10 @@ A palavra secreta fica nas tabelas `challenges` e `plays`, que não têm policy 
 1. Rode `supabase/migrations/003_limite_e_limpeza.sql`.
 2. O criador escolhe 1, 3, 5 ou 10 rodadas ao criar a sala. Ao fim da última, aparece o campeão (ou o empate) e a sala não aceita mais rodadas.
 3. Salas e desafios por link são apagados 24 horas depois da última atividade, em cascata (jogadores, palavras e palpites juntos). A função `limpar_expirados()` roda a cada 30 minutos via `pg_cron` (o SQL tenta ativá-lo; se falhar, ative em Database > Extensions) e também sempre que alguém cria uma sala ou desafio.
+
+## Perfil, estatísticas e sessão
+
+1. Rode `supabase/migrations/004_historico.sql` (tabela `game_results` com RLS: cada jogador só lê e grava as próprias partidas).
+2. **Login:** o site pede login ao entrar (`components/AuthGate.tsx`). A sessão fica salva no navegador e vale **7 dias** a partir do último login; depois disso pede login de novo. O servidor também recusa sessões mais antigas que isso (`lib/server.ts`). Para mudar o prazo, ajuste `SESSION_DAYS` em `lib/session.ts` e o `7` em `lib/server.ts`.
+3. **Estatísticas:** cada partida (solo, desafio e sala) é salva no aparelho na hora (`localStorage`, por conta) e enviada à conta; ao entrar em outro aparelho, o histórico volta no sync. O perfil fica em `/perfil`.
+4. Os resultados são registrados pelo próprio navegador, então servem como estatística pessoal, não como ranking à prova de trapaça.

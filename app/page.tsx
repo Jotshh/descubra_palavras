@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import HelpModal from "@/components/HelpModal";
+import { supabase } from "@/lib/supabase";
 
 export default function Home() {
   const [help, setHelp] = useState(true); // abre toda vez que o jogo é aberto
@@ -10,7 +11,11 @@ export default function Home() {
     <>
       <nav className="top">
         <span className="brand">TERMO COM MAETHOR E AMIGOS</span>
-        <button className="ghost" onClick={() => setHelp(true)}>Como jogar</button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <Link href="/perfil" className="ghost">Meu perfil</Link>
+          <button className="ghost" onClick={() => setHelp(true)}>Como jogar</button>
+          <button className="ghost" onClick={() => supabase().auth.signOut().then(() => (location.href = "/entrar"))}>Sair</button>
+        </div>
       </nav>
       <main className="wrap">
         <section className="hero">

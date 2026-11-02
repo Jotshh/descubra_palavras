@@ -19,7 +19,11 @@ export async function authUser(req: Request): Promise<User | null> {
   const token = req.headers.get("authorization")?.replace("Bearer ", "");
   if (!token) return null;
   const { data } = await admin().auth.getUser(token);
-  return data.user ?? null;
+  const u = data.user;
+  if (!u) return null;
+  // Sessões valem 7 dias a partir do último login (o servidor também confere).
+  if (Date.now() - new Date(u.last_sign_in_at ?? u.created_at).getTime() > 7 * 86_400_000) return null;
+  return u;
 }
 
 export const nickname = (u: User) =>
