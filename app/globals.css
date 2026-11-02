@@ -69,3 +69,33 @@ button:focus-visible,a:focus-visible{outline:2px solid var(--ink);outline-offset
 .modal .btn{margin-top:8px}
 @media (max-width:480px){.k{min-width:30px;height:46px;padding:0 4px}.k.wide{min-width:52px}.kr{gap:4px}.modal{padding:24px}}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}.tile.c,.tile.p,.tile.a{background:var(--bg2);color:var(--fg2);border-color:var(--bd2)}}
+/* formulários e desafio */
+.panel{max-width:440px;margin:24px auto 48px;padding:0 20px}
+.panel .card{gap:14px}
+.panel h1{font-size:1.6rem;font-weight:800;letter-spacing:-.02em;margin:0}
+.field{width:100%;height:48px;border:1px solid #d6d6d6;border-radius:14px;padding:0 14px;font:inherit;font-size:1rem;background:#fff;color:var(--ink)}
+.field:focus{outline:2px solid var(--ink);outline-offset:1px}
+.sep{display:flex;align-items:center;gap:12px;color:var(--neutral);font-size:.8rem;font-weight:600}
+.sep:before,.sep:after{content:"";flex:1;height:1px;background:var(--line)}
+.err{color:#b42318;font-size:.9rem;margin:0}
+.ok{color:var(--mid);font-size:.9rem;margin:0}
+.row2{display:flex;gap:8px}.row2 .btn{flex:1}
+.list{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.list li{display:flex;justify-content:space-between;padding:10px 14px;background:var(--key);border-radius:12px;font-weight:600;font-size:.9rem}
+.result{max-width:420px;text-align:center;padding:0 16px 32px}
+.result h2{margin:0 0 4px}
+/* salas */
+.room{display:grid;grid-template-columns:1fr 280px;gap:24px;max-width:960px;margin:0 auto;padding:0 20px 32px;align-items:start}
+@media (max-width:760px){.room{grid-template-columns:1fr}}
+.code{font-size:2.4rem;font-weight:800;letter-spacing:.2em;text-align:center;margin:4px 0}
+.side{display:grid;gap:10px}
+.pcard{background:var(--card);border:1px solid #efefef;border-radius:16px;padding:12px 14px}
+.pcard .head{display:flex;justify-content:space-between;font-weight:700;font-size:.9rem;margin-bottom:8px}
+.pcard small{color:var(--neutral);font-weight:600}
+.mini{display:grid;gap:3px}
+.mini div{display:flex;gap:3px}
+.sq{width:14px;height:14px;border-radius:4px;background:var(--key)}
+.sq.c{background:var(--ink)}.sq.p{background:var(--mid)}.sq.a{background:var(--absent)}
+.timer{font-weight:800;font-size:1.2rem;text-align:center;font-variant-numeric:tabular-nums}
+.rank{display:grid;gap:8px;margin:12px 0}
+.rank li{display:grid;grid-template-columns:1fr auto auto;gap:12px}

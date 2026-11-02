@@ -29,16 +29,14 @@ export default function Home() {
             <Link href="/jogo" className="btn pri">Começar a jogar</Link>
           </article>
           <article className="card">
-            <span className="soon">Em breve</span>
             <h2>Desafiar um amigo</h2>
             <p>Escolha uma palavra, gere um link e veja se o amigo descobre.</p>
-            <span className="btn" aria-disabled="true">Criar desafio</span>
+            <Link href="/desafio/novo" className="btn">Criar desafio</Link>
           </article>
           <article className="card">
-            <span className="soon">Em breve</span>
             <h2>Sala online</h2>
             <p>Entre numa sala com código e acompanhe o progresso de todos em tempo real.</p>
-            <span className="btn" aria-disabled="true">Entrar ou criar sala</span>
+            <Link href="/sala" className="btn">Entrar ou criar sala</Link>
           </article>
         </section>
       </main>
