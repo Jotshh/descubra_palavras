@@ -57,3 +57,9 @@ A palavra secreta fica nas tabelas `challenges` e `plays`, que não têm policy 
 3. Pontuação por rodada: `7 − tentativas` para quem acerta, 0 para quem não acerta. Constantes em `lib/rooms.ts` (`ROUND_MS`, `MAX_PLAYERS`).
 4. Só `rooms` e `room_players` são legíveis pelo navegador, e guardam apenas cores. Palavras e palpites com letras ficam em `room_secrets` e `room_plays` (sem policy).
 5. Se o Realtime não estiver ativo, a sala atualiza sozinha a cada 5 segundos.
+
+## Limite de rodadas e limpeza
+
+1. Rode `supabase/migrations/003_limite_e_limpeza.sql`.
+2. O criador escolhe 1, 3, 5 ou 10 rodadas ao criar a sala. Ao fim da última, aparece o campeão (ou o empate) e a sala não aceita mais rodadas.
+3. Salas e desafios por link são apagados 24 horas depois da última atividade, em cascata (jogadores, palavras e palpites juntos). A função `limpar_expirados()` roda a cada 30 minutos via `pg_cron` (o SQL tenta ativá-lo; se falhar, ative em Database > Extensions) e também sempre que alguém cria uma sala ou desafio.

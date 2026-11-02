@@ -35,3 +35,9 @@ export async function startRound(db: SupabaseClient, room: any, players: any[]) 
   await db.from("room_players").update({ status: "playing", patterns: [], has_word: false }).eq("room_code", room.code);
   await db.from("rooms").update({ status: "playing", round, round_ends_at: new Date(Date.now() + ROUND_MS).toISOString() }).eq("code", room.code);
 }
+
+/** Registra atividade (no máximo 1 vez por minuto) para a limpeza das salas paradas há 24h. */
+export async function touch(db: SupabaseClient, room: any) {
+  if (Date.now() - new Date(room.last_activity).getTime() < 60_000) return;
+  await db.from("rooms").update({ last_activity: new Date().toISOString() }).eq("code", room.code);
+}
