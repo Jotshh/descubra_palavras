@@ -1,4 +1,3 @@
-"""Gera public/dict/*.json a partir de fserb/pt-br (MIT). Rode na raiz do projeto: python3 scripts/build-dict.py"""
 import unicodedata,re,json,os,random
 def norm(s):
     s=unicodedata.normalize("NFD",s.strip().lower())
