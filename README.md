@@ -70,3 +70,10 @@ A palavra secreta fica nas tabelas `challenges` e `plays`, que não têm policy 
 2. **Login:** o site pede login ao entrar (`components/AuthGate.tsx`). A sessão fica salva no navegador e vale **7 dias** a partir do último login; depois disso pede login de novo. O servidor também recusa sessões mais antigas que isso (`lib/server.ts`). Para mudar o prazo, ajuste `SESSION_DAYS` em `lib/session.ts` e o `7` em `lib/server.ts`.
 3. **Estatísticas:** cada partida (solo, desafio e sala) é salva no aparelho na hora (`localStorage`, por conta) e enviada à conta; ao entrar em outro aparelho, o histórico volta no sync. O perfil fica em `/perfil`.
 4. Os resultados são registrados pelo próprio navegador, então servem como estatística pessoal, não como ranking à prova de trapaça.
+
+## Palavra do dia, @ e ranking
+
+1. Rode `supabase/migrations/005_diario_ranking.sql` (perfis com @, jogadas do dia e histórico com o modo "daily").
+2. **Palavra do dia:** uma de 5 letras por dia, igual para todos, escolhida no servidor entre as palavras comuns (`lib/daily.ts`). O dia vira à meia-noite de Brasília (`lib/dates.ts`). Defina `DAILY_SALT` na Vercel (qualquer texto secreto) para que ninguém consiga prever as próximas palavras lendo o código.
+3. **@:** gerado a partir do apelido (contas com e-mail ou Google), único, editável com intervalo de 30 dias entre trocas (`COOLDOWN_DAYS` em `app/api/profile/route.ts`). Contas anônimas não têm @.
+4. **Ranking** (`/ranking`): só aparece quem ativar "aparecer no ranking geral" no perfil. Dia: menos tentativas, depois menos tempo (medido pelo servidor). Semana e geral: `7 − tentativas` por acerto, desempate por mais acertos.
