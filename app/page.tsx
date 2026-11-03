@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import HelpModal from "@/components/HelpModal";
+import InviteBanner from "@/components/InviteBanner";
 import { supabase } from "@/lib/supabase";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
       <nav className="top">
         <span className="brand">TERMO COM MAETHOR E AMIGOS</span>
         <div style={{ display: "flex", gap: 8 }}>
+          <Link href="/amigos" className="ghost">Amigos</Link>
           <Link href="/ranking" className="ghost">Ranking</Link>
           <Link href="/perfil" className="ghost">Meu perfil</Link>
           <button className="ghost" onClick={() => setHelp(true)}>Como jogar</button>
@@ -19,6 +21,7 @@ export default function Home() {
         </div>
       </nav>
       <main className="wrap">
+        <InviteBanner />
         <section className="hero">
           <h1>Termo com Maethor<br />e amigos</h1>
           <p>Descubra a palavra secreta sozinho ou desafie os amigos. Seis tentativas, três cores de dica.</p>

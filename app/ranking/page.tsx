@@ -12,13 +12,14 @@ const mmss = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, 
 export default function Ranking() {
   const { session } = useSession();
   const [scope, setScope] = useState<Scope>("day");
+  const [group, setGroup] = useState<"global" | "friends">("global");
   const [rows, setRows] = useState<R[] | null>(null);
   const [err, setErr] = useState("");
 
   useEffect(() => {
     setRows(null); setErr("");
-    api<{ rows: R[] }>(`/api/ranking?scope=${scope}`).then((r) => setRows(r.rows)).catch((e) => setErr(e.message));
-  }, [scope]);
+    api<{ rows: R[] }>(`/api/ranking?scope=${scope}${group === "friends" ? "&group=friends" : ""}`).then((r) => setRows(r.rows)).catch((e) => setErr(e.message));
+  }, [scope, group]);
 
   const anon = !!session?.user.is_anonymous;
   return (
@@ -26,6 +27,10 @@ export default function Ranking() {
       <div className="card">
         <Link href="/" className="brand">← Início</Link>
         <h1>Ranking</h1>
+        <div className="seg" role="group" aria-label="Quem aparece">
+          <button aria-pressed={group === "global"} onClick={() => setGroup("global")}>Geral</button>
+          <button aria-pressed={group === "friends"} onClick={() => setGroup("friends")}>Amigos</button>
+        </div>
         <div className="seg" role="group" aria-label="Período">
           {TABS.map(([k, label]) => <button key={k} aria-pressed={scope === k} onClick={() => setScope(k)}>{label}</button>)}
         </div>
@@ -33,7 +38,7 @@ export default function Ranking() {
           {scope === "day" ? "Palavra do dia: menos tentativas e, no empate, menos tempo." : "Pontos da palavra do dia: 7 − tentativas por acerto."}
         </p>
         {err && <p className="err" role="alert">{err}</p>}
-        {rows && rows.length === 0 && <p className="ok">Ninguém no ranking ainda. Jogue a palavra do dia e ative “aparecer no ranking geral” no perfil.</p>}
+        {rows && rows.length === 0 && <p className="ok">{group === "friends" ? "Nenhum amigo jogou neste período. Adicione amigos em “Amigos”." : "Ninguém no ranking ainda. Jogue a palavra do dia e ative “aparecer no ranking geral” no perfil."}</p>}
         {rows && rows.length > 0 && (
           <ol className="list">
             {rows.map((r, i) => (

@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 import ServerGame, { Reply, Row } from "@/components/ServerGame";
 import { api, supabase } from "@/lib/supabase";
 import { recordGame } from "@/lib/history";
+import InviteFriends from "@/components/InviteFriends";
 import { useRequireLogin } from "@/lib/useSession";
 
 type P = { id: string; nickname: string; seat: number; status: string; patterns: string[]; score: number; hasWord: boolean };
@@ -105,6 +106,7 @@ export default function Sala() {
           <p className="ok">Código da sala</p>
           <div className="code">{code}</div>
           <button className="btn" onClick={copiar}>Copiar link da sala</button>
+          <InviteFriends code={code} />
           <h2>Jogadores ({players.length}/8)</h2>
           {roster}
           {isHost
