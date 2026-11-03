@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import HandleCard from "@/components/HandleCard";
 import { loadLocal, sync } from "@/lib/history";
 import { MODE_LABEL, Result, computeStats } from "@/lib/stats";
 import { supabase } from "@/lib/supabase";
@@ -79,6 +80,8 @@ export default function Perfil() {
           {msg && <p className="ok" role="status">{msg}</p>}
         </section>
 
+        <HandleCard />
+
         <div className="grid3">
           <section className="card">
             <span className="lbl">Sequência diária</span>
@@ -93,7 +96,7 @@ export default function Perfil() {
           </section>
           <section className="card">
             <span className="lbl">Modos de jogo</span>
-            {(["solo", "challenge", "room"] as const).map((m) => (
+            {(["daily", "solo", "challenge", "room"] as const).map((m) => (
               <div className="kv" key={m}><span>{MODE_LABEL[m]}</span><b>{st.modes[m].games}j ({st.modes[m].games ? Math.round((100 * st.modes[m].wins) / st.modes[m].games) : 0}% vit.)</b></div>
             ))}
           </section>

@@ -12,6 +12,7 @@ export default function Home() {
       <nav className="top">
         <span className="brand">TERMO COM MAETHOR E AMIGOS</span>
         <div style={{ display: "flex", gap: 8 }}>
+          <Link href="/ranking" className="ghost">Ranking</Link>
           <Link href="/perfil" className="ghost">Meu perfil</Link>
           <button className="ghost" onClick={() => setHelp(true)}>Como jogar</button>
           <button className="ghost" onClick={() => supabase().auth.signOut().then(() => (location.href = "/entrar"))}>Sair</button>
@@ -29,9 +30,14 @@ export default function Home() {
         </section>
         <section className="modes">
           <article className="card">
+            <h2>Palavra do dia</h2>
+            <p>Uma palavra de 5 letras por dia, igual para todos. Seis tentativas e entrada no ranking.</p>
+            <Link href="/diario" className="btn pri">Jogar a de hoje</Link>
+          </article>
+          <article className="card">
             <h2>Jogar solo</h2>
             <p>Uma palavra aleatória a cada partida, com 4, 5 ou 6 letras.</p>
-            <Link href="/jogo" className="btn pri">Começar a jogar</Link>
+            <Link href="/jogo" className="btn">Começar a jogar</Link>
           </article>
           <article className="card">
             <h2>Desafiar um amigo</h2>

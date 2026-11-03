@@ -1,8 +1,8 @@
 export type Result = {
-  id: string; at: string; mode: "solo" | "challenge" | "room"; len: number;
+  id: string; at: string; mode: "solo" | "challenge" | "room" | "daily"; len: number;
   won: boolean; attempts: number; word: string; secs?: number | null; synced?: boolean;
 };
-export const MODE_LABEL = { solo: "Modo solo", challenge: "Desafio de amigo", room: "Sala online" } as const;
+export const MODE_LABEL = { daily: "Palavra do dia", solo: "Modo solo", challenge: "Desafio de amigo", room: "Sala online" } as const;
 
 const dayKey = (d: Date) => d.toLocaleDateString("sv-SE"); // AAAA-MM-DD no fuso local
 
@@ -54,7 +54,7 @@ export function computeStats(list: Result[]) {
   return {
     games: list.length, wins: wins.length, dist,
     avg: wins.length ? wins.reduce((a, r) => a + r.attempts, 0) / wins.length : 0,
-    modes: { solo: mode("solo"), challenge: mode("challenge"), room: mode("room") },
+    modes: { daily: mode("daily"), solo: mode("solo"), challenge: mode("challenge"), room: mode("room") },
     streak, best, heat, active: heat.filter((h) => h.n > 0).length, achievements,
     recent: [...list].sort((a, b) => b.at.localeCompare(a.at)).slice(0, 10),
   };
