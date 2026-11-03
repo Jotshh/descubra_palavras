@@ -1,22 +1,8 @@
 import { NextResponse } from "next/server";
-import { norm } from "@/lib/game";
-import { admin, authUser, fail, nickname } from "@/lib/server";
+import { ensureProfile } from "@/lib/profiles";
+import { admin, authUser, fail } from "@/lib/server";
 
 const COOLDOWN_DAYS = 30; // intervalo mínimo entre trocas de @ (a primeira troca é livre)
-
-async function ensureProfile(db: ReturnType<typeof admin>, user: any) {
-  const { data } = await db.from("profiles").select("*").eq("user_id", user.id).maybeSingle();
-  if (data) return data;
-  let base = norm(nickname(user)).replace(/[^a-z0-9_]/g, "").slice(0, 14);
-  if (base.length < 3) base = "jogador";
-  for (let i = 0; i < 8; i++) {
-    const handle = i === 0 ? base : `${base}${Math.floor(Math.random() * 9000 + 1000)}`;
-    const { data: row, error } = await db.from("profiles").insert({ user_id: user.id, handle }).select().single();
-    if (!error) return row;
-    if (error.code !== "23505") break; // só repete se o @ já existir
-  }
-  return null;
-}
 
 const shape = (p: any) => {
   const next = p.handle_changed_at ? new Date(p.handle_changed_at).getTime() + COOLDOWN_DAYS * 86_400_000 : 0;

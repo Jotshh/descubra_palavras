@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { mondayOf, todayKey } from "@/lib/dates";
+import { friendIds } from "@/lib/friends";
 import { admin, authUser, fail } from "@/lib/server";
 
 type Agg = { id: string; handle: string; points: number; wins: number; games: number; attempts: number; secs: number };
@@ -13,7 +14,14 @@ export async function GET(req: Request) {
   const from = scope === "week" ? mondayOf(day) : scope === "all" ? "2000-01-01" : day;
   const db = admin();
 
-  const { data: profs } = await db.from("profiles").select("user_id,handle").eq("show_in_ranking", true);
+  // group=friends: você e seus amigos (aceitar a amizade já vale como permissão). Padrão: ranking geral opt-in.
+  const friends = new URL(req.url).searchParams.get("group") === "friends";
+  let q: any = db.from("profiles").select("user_id,handle");
+  if (friends) {
+    if (user.is_anonymous) return fail("Entre com e-mail ou Google para ver o ranking entre amigos", 403);
+    q = q.in("user_id", [user.id, ...(await friendIds(db, user.id))]);
+  } else q = q.eq("show_in_ranking", true);
+  const { data: profs } = await q;
   const names = new Map<string, string>((profs ?? []).map((p: any) => [p.user_id, p.handle]));
   if (!names.size) return NextResponse.json({ rows: [] });
 
