@@ -29,7 +29,7 @@ export default function HelpModal({ onClose }: { onClose: () => void }) {
         <Ex cls="demo-p" letter="E">A letra existe na palavra, mas em outra posição. Marcada com um losango.</Ex>
         <Ex cls="demo-a" letter="R">A letra não está na palavra. Marcada com um traço.</Ex>
         <h3>Modos</h3>
-        <p><b>Solo:</b> uma palavra aleatória a cada partida. <b>Desafio:</b> escolha uma palavra e mande o link para um amigo. <b>Sala online:</b> até 8 jogadores, em corrida (mesma palavra para todos) ou duelo (cada um escolhe a palavra do próximo). Cada rodada dura 5 minutos.</p>
+        <p><b>Palavra do dia:</b> uma de 5 letras por dia, igual para todos. <b>Solo:</b> uma palavra aleatória a cada partida. <b>Desafio:</b> escolha uma palavra e mande o link para um amigo. <b>Sala online:</b> até 8 jogadores, em corrida (mesma palavra para todos) ou duelo (cada um escolhe a palavra do próximo). Cada rodada dura 5 minutos.</p>
         <button className="btn pri" onClick={onClose} autoFocus>Entendi, vamos jogar</button>
       </div>
     </div>
