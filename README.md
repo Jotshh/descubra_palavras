@@ -77,3 +77,10 @@ A palavra secreta fica nas tabelas `challenges` e `plays`, que não têm policy 
 2. **Palavra do dia:** uma de 5 letras por dia, igual para todos, escolhida no servidor entre as palavras comuns (`lib/daily.ts`). O dia vira à meia-noite de Brasília (`lib/dates.ts`). Defina `DAILY_SALT` na Vercel (qualquer texto secreto) para que ninguém consiga prever as próximas palavras lendo o código.
 3. **@:** gerado a partir do apelido (contas com e-mail ou Google), único, editável com intervalo de 30 dias entre trocas (`COOLDOWN_DAYS` em `app/api/profile/route.ts`). Contas anônimas não têm @.
 4. **Ranking** (`/ranking`): só aparece quem ativar "aparecer no ranking geral" no perfil. Dia: menos tentativas, depois menos tempo (medido pelo servidor). Semana e geral: `7 − tentativas` por acerto, desempate por mais acertos.
+
+## Amigos e convites
+
+1. Rode `supabase/migrations/006_amigos.sql` (tabelas `friendships` e `room_invites`).
+2. **Amigos** (`/amigos`): peça amizade pelo @ exato; a outra pessoa aceita ou recusa na mesma tela. Se os dois pedirem um ao outro, a amizade é aceita na hora. Até 20 pedidos enviados em aberto. Só contas com e-mail ou Google usam amigos.
+3. **Ranking entre amigos** (`/ranking`, aba "Amigos"): você e todos os seus amigos, mesmo quem não ativou o ranking geral (aceitar a amizade vale como permissão).
+4. **Convites para sala:** na sala de espera, "Convidar amigos". O convite aparece na home e em Amigos para o convidado, e some quando a sala começa ou expira.
