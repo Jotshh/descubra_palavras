@@ -19,7 +19,9 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", title: SITE_TITLE, description: SITE_DESCRIPTION },
   // Padrão: não indexar. Só a home, "Como jogar" e "Sobre" liberam a indexação (cada uma no próprio arquivo).
   robots: { index: false, follow: false },
-  verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION } : undefined,
+  verification: {
+    google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ?? "hcpmaaz3nhmxsR0MVtou9OBrrwOD80eGf_kPHMq7qpU",
+  },
 };
 
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#272727" };
