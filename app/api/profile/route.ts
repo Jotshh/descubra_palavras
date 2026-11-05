@@ -20,7 +20,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const user = await authUser(req);
   if (!user) return fail("Faça login", 401);
-  if (user.is_anonymous) return fail("Entre com e-mail ou Google para ter um @", 403);
+  if (user.is_anonymous) return fail("Entre com e-mail para ter um @", 403);
   const db = admin();
   const p = await ensureProfile(db, user);
   if (!p) return fail("Não foi possível criar o perfil", 500);

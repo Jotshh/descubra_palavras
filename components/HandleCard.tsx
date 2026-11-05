@@ -22,7 +22,7 @@ export default function HandleCard() {
     return (
       <section className="card">
         <span className="lbl">@ e ranking</span>
-        <p className="ok">Você está jogando só com apelido. Entre com e-mail ou Google para ter um @, adicionar amigos e aparecer no ranking.</p>
+        <p className="ok">Você está jogando só com apelido. Entre com e-mail para ter um @, adicionar amigos e aparecer no ranking.</p>
       </section>
     );
   }

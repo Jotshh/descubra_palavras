@@ -1,11 +1,11 @@
 import { ensureProfile } from "./profiles";
 import { admin, authUser, fail } from "./server";
 
-/** Login + conta com e-mail/Google + perfil. Contas anônimas não usam amigos. */
+/** Login + conta com e-mail + perfil. Contas anônimas não usam amigos. */
 export async function friendsAuth(req: Request) {
   const user = await authUser(req);
   if (!user) return { error: fail("Faça login", 401) };
-  if (user.is_anonymous) return { error: fail("Entre com e-mail ou Google para usar amigos", 403) };
+  if (user.is_anonymous) return { error: fail("Entre com e-mail para usar amigos", 403) };
   const db = admin();
   const profile = await ensureProfile(db, user);
   if (!profile) return { error: fail("Não foi possível carregar seu perfil", 500) };

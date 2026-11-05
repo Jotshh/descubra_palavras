@@ -1,7 +1,7 @@
 import { norm } from "./game";
 import { admin, nickname } from "./server";
 
-/** Garante que a conta (e-mail ou Google) tenha um perfil com @ único gerado a partir do apelido. */
+/** Garante que a conta (e-mail) tenha um perfil com @ único gerado a partir do apelido. */
 export async function ensureProfile(db: ReturnType<typeof admin>, user: any) {
   const { data } = await db.from("profiles").select("*").eq("user_id", user.id).maybeSingle();
   if (data) return data;

@@ -53,7 +53,7 @@ export default function Ranking() {
             ))}
           </ol>
         )}
-        {anon && <p className="ok">Você está jogando só com apelido. Entre com e-mail ou Google para aparecer no ranking.</p>}
+        {anon && <p className="ok">Você está jogando só com apelido. Entre com e-mail para aparecer no ranking.</p>}
         <Link href="/diario" className="btn pri">Jogar a palavra do dia</Link>
         <Link href="/perfil" className="btn">Meu perfil e privacidade</Link>
       </div>

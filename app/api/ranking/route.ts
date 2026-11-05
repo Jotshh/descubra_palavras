@@ -18,7 +18,7 @@ export async function GET(req: Request) {
   const friends = new URL(req.url).searchParams.get("group") === "friends";
   let q: any = db.from("profiles").select("user_id,handle");
   if (friends) {
-    if (user.is_anonymous) return fail("Entre com e-mail ou Google para ver o ranking entre amigos", 403);
+    if (user.is_anonymous) return fail("Entre com e-mail para ver o ranking entre amigos", 403);
     q = q.in("user_id", [user.id, ...(await friendIds(db, user.id))]);
   } else q = q.eq("show_in_ranking", true);
   const { data: profs } = await q;

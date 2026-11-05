@@ -36,7 +36,7 @@ export default function Amigos() {
 
   if (session?.user.is_anonymous) {
     return <main className="panel"><div className="card"><Link href="/" className="brand">← Início</Link><h1>Amigos</h1>
-      <p className="ok">Você está jogando só com apelido. Entre com e-mail ou Google para ter um @ e adicionar amigos.</p></div></main>;
+      <p className="ok">Você está jogando só com apelido. Entre com e-mail para ter um @ e adicionar amigos.</p></div></main>;
   }
   return (
     <main className="panel">
