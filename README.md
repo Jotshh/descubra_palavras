@@ -44,7 +44,7 @@ O léxico não traz vários plurais e femininos (ex.: "livros", "outra"). O scri
 ## Supabase (desafio por link)
 
 1. No SQL Editor, rode `supabase/migrations/001_desafios.sql`.
-2. Em Authentication > Providers, ative **Email**, **Google** (precisa de Client ID/Secret do Google Cloud) e, em Authentication > Sign In / Providers, **Allow anonymous sign-ins** (jogar só com apelido).
+2. Em Authentication > Providers, ative **Email**. O login com Google foi removido da tela, e o botão "Jogar só com apelido" está desativado ("em breve"). O código do login anônimo continua em `app/entrar/page.tsx`; para reativar, remova o `disabled` do campo e do botão e ligue **Allow anonymous sign-ins** no Supabase.
 3. Em Authentication > URL Configuration, coloque a URL do site (ex.: `http://localhost:3000` e a da Vercel) em Site URL e Redirect URLs.
 4. Copie `.env.example` para `.env.local` e preencha as chaves (Project Settings > API). A `service_role` fica só no servidor e nunca pode ter o prefixo `NEXT_PUBLIC_`.
 
@@ -75,5 +75,22 @@ A palavra secreta fica nas tabelas `challenges` e `plays`, que não têm policy 
 
 1. Rode `supabase/migrations/005_diario_ranking.sql` (perfis com @, jogadas do dia e histórico com o modo "daily").
 2. **Palavra do dia:** uma de 5 letras por dia, igual para todos, escolhida no servidor entre as palavras comuns (`lib/daily.ts`). O dia vira à meia-noite de Brasília (`lib/dates.ts`). Defina `DAILY_SALT` na Vercel (qualquer texto secreto) para que ninguém consiga prever as próximas palavras lendo o código.
-3. **@:** gerado a partir do apelido (contas com e-mail ou Google), único, editável com intervalo de 30 dias entre trocas (`COOLDOWN_DAYS` em `app/api/profile/route.ts`). Contas anônimas não têm @.
+3. **@:** gerado a partir do apelido (contas com e-mail), único, editável com intervalo de 30 dias entre trocas (`COOLDOWN_DAYS` em `app/api/profile/route.ts`). Contas anônimas não têm @.
 4. **Ranking** (`/ranking`): só aparece quem ativar "aparecer no ranking geral" no perfil. Dia: menos tentativas, depois menos tempo (medido pelo servidor). Semana e geral: `7 − tentativas` por acerto, desempate por mais acertos.
+
+## Amigos e convites
+
+1. Rode `supabase/migrations/006_amigos.sql` (tabelas `friendships` e `room_invites`).
+2. **Amigos** (`/amigos`): peça amizade pelo @ exato; a outra pessoa aceita ou recusa na mesma tela. Se os dois pedirem um ao outro, a amizade é aceita na hora. Até 20 pedidos enviados em aberto. Só contas com e-mail usam amigos.
+3. **Ranking entre amigos** (`/ranking`, aba "Amigos"): você e todos os seus amigos, mesmo quem não ativou o ranking geral (aceitar a amizade vale como permissão).
+4. **Convites para sala:** na sala de espera, "Convidar amigos". O convite aparece na home e em Amigos para o convidado, e some quando a sala começa ou expira.
+
+## SEO e descoberta por IAs
+
+- **Páginas públicas e indexáveis:** `/` (home), `/como-jogar` e `/sobre`. Todas as outras páginas exigem login e saem com `noindex` (o padrão está em `app/layout.tsx`).
+- **Arquivos gerados:** `robots.txt` (`app/robots.ts`, com os rastreadores de IA liberados), `sitemap.xml` (`app/sitemap.ts`), `llms.txt` (`app/llms.txt/route.ts`), imagem de compartilhamento (`app/opengraph-image.tsx`) e ícone (`app/icon.tsx`).
+- **Metadados:** título, descrição, URL canônica, Open Graph, Twitter Card e dados estruturados JSON-LD (`WebSite` e `WebApplication`) na home.
+- **URL base:** `lib/site.ts`. Com domínio próprio, defina `NEXT_PUBLIC_SITE_URL` na Vercel (ex.: `https://meujogo.com.br`, sem barra no final).
+- **Google Search Console:** crie uma propriedade para a URL do site, escolha a verificação por **tag HTML**, copie só o valor de `content` e coloque em `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` na Vercel. Faça o redeploy, clique em Verificar e envie `/sitemap.xml` em Sitemaps. Depois, em Inspeção de URL, peça a indexação da home.
+- **Bing:** o Bing Webmaster Tools importa a propriedade direto do Search Console. Boa parte das buscas de IA usa o índice do Bing e do Google.
+- Para bloquear os rastreadores de IA de treinamento, veja o comentário em `app/robots.ts`.

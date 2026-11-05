@@ -1048,3 +1048,76 @@ a:focus-visible {
     color: var(--neutral);
     font-weight: 600
 }
+
+/* páginas públicas (SEO) e estados desativados */
+.prose {
+    max-width: 760px;
+    padding-bottom: 32px
+}
+
+.prose h1 {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -.03em;
+    margin: 12px 0
+}
+
+.prose h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 32px 0 8px;
+    letter-spacing: -.01em
+}
+
+.prose h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 20px 0 4px
+}
+
+.prose p,
+.prose li {
+    color: var(--mid);
+    line-height: 1.7
+}
+
+.prose ul,
+.prose ol {
+    padding-left: 22px
+}
+
+.prose a:not(.btn) {
+    color: var(--ink);
+    font-weight: 600
+}
+
+.foot {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 20px 40px;
+    color: var(--neutral);
+    font-size: .85rem;
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    border-top: 1px solid var(--line)
+}
+
+.foot a {
+    color: var(--mid);
+    font-weight: 600
+}
+
+.btn:disabled {
+    background: var(--key);
+    color: var(--neutral);
+    border-color: var(--line);
+    cursor: not-allowed
+}
+
+.field:disabled {
+    background: var(--key);
+    color: var(--neutral);
+    cursor: not-allowed
+}

@@ -15,9 +15,6 @@ export default function Entrar() {
   const { session, ready } = useSession();
   useEffect(() => { if (ready && session && !expired(session)) location.href = nextUrl(); }, [ready, session]);
 
-  const google = () =>
-    supabase().auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + nextUrl() } });
-
   const emailLogin = async (criar: boolean) => {
     setMsg(""); setBusy(true);
     const auth = supabase().auth;
@@ -43,8 +40,6 @@ export default function Entrar() {
     <main className="panel">
       <div className="card">
         <h1>Entrar</h1>
-        <button className="btn" onClick={google} disabled={busy}>Continuar com Google</button>
-        <div className="sep">ou com e-mail</div>
         <input className="field" type="email" placeholder="E-mail" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
         <input className="field" type="password" placeholder="Senha" value={pass} onChange={(e) => setPass(e.target.value)} autoComplete="current-password" />
         <div className="row2">
@@ -52,8 +47,8 @@ export default function Entrar() {
           <button className="btn" onClick={() => emailLogin(true)} disabled={busy}>Criar conta</button>
         </div>
         <div className="sep">ou sem conta</div>
-        <input className="field" placeholder="Seu apelido" value={nick} maxLength={20} onChange={(e) => setNick(e.target.value)} />
-        <button className="btn" onClick={semConta} disabled={busy}>Jogar só com apelido</button>
+        <input className="field" placeholder="Seu apelido" value={nick} maxLength={20} onChange={(e) => setNick(e.target.value)} disabled />
+        <button className="btn" onClick={semConta} disabled>Jogar só com apelido (em breve)</button>
         {msg && <p className="err" role="alert">{msg}</p>}
       </div>
     </main>
